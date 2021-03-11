@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: "SV-Nginx-Rails"
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend:/home/backend
+      - ./frontend:/home/frontend
+      - ./docker/templates:/etc/nginx/templates
+      - ./docker/entrypoint:/home/docker
+    entrypoint: ["sh", "-c", "chmod 777 /home/docker/nginx.sh && ./home/docker/nginx.sh"]
+    links:
+      - ruby
+    depends_on:
+      - ruby
+  ruby:
+    image: ruby:3.0
+    container_name: "SV-Ruby"
+    volumes:
+      - ./backend:/home/backend
+      - ./frontend:/home/frontend
+      - ./docker/entrypoint:/home/docker
+    entrypoint: ["sh", "-c", "chmod 777 /home/docker/init-rails.sh && ./home/docker/init-rails.sh"]
+
